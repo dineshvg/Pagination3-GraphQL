@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GorillasTask</string>
+    <string name="network_error">Network error. Please restart app to test</string>
+</resources>

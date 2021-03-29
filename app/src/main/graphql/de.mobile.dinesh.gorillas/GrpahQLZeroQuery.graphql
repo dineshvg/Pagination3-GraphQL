@@ -1,0 +1,37 @@
+query GetPostById(
+    $id: ID!,
+){
+    post(id: $id) {
+        id
+        title
+        body
+        user {
+            name
+            username
+        }
+    }
+}
+
+query PaginatePosts(
+    $options: PageQueryOptions
+) {
+    posts(options: $options) {
+        data {
+            id
+            title
+            body
+            user {
+                name
+                username
+            }
+        }
+        links {
+            prev {
+                page
+            }
+            next {
+                page
+            }
+        }
+    }
+}
