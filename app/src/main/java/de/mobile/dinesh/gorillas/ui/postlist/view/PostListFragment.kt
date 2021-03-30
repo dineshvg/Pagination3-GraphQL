@@ -5,19 +5,22 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.mobile.dinesh.gorillas.R
 import de.mobile.dinesh.gorillas.databinding.FragmentPostListBinding
 import de.mobile.dinesh.gorillas.ui.extensions.observe
-import de.mobile.dinesh.gorillas.ui.postdetail.view.PostDetailFragment
 import de.mobile.dinesh.gorillas.ui.postlist.adapter.PostListAdapter
 import de.mobile.dinesh.gorillas.ui.postlist.viewmodel.PostListViewModel
 import de.mobile.dinesh.gorillas.ui.postlist.viewmodel.PostListViewModel.State
 import de.mobile.dinesh.gorillas.ui.postlist.viewmodel.PostListViewModel.State.Content
 import de.mobile.dinesh.gorillas.ui.postlist.viewmodel.PostListViewModel.State.Loading
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class PostListFragment : Fragment(R.layout.fragment_post_list) {
@@ -36,6 +39,18 @@ class PostListFragment : Fragment(R.layout.fragment_post_list) {
             adapter = postListAdapter
             postListAdapter.onPostSelected= { navigateToDetail(it) }
         }
+
+        lifecycleScope.launch {
+            postListAdapter.loadStateFlow.collectLatest { pagingStates ->
+                when(pagingStates.refresh ) {
+                    is LoadState.Error -> viewModel.setStateToError()
+                    else -> {
+                        //allow the natural flow to show the data
+                    }
+                }
+            }
+        }
+
         observe(viewModel.state, ::onStateChanged)
     }
 
