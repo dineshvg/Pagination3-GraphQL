@@ -1,6 +1,8 @@
 package de.mobile.dinesh.gorillas.data.injection
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
+import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import de.mobile.dinesh.gorillas.data.PostsRepositoryImpl
 import de.mobile.dinesh.gorillas.data.network.client.ApiClient
 import de.mobile.dinesh.gorillas.domain.reposiotory.PostsRepository
@@ -39,6 +41,7 @@ val dataModule = module {
     single {
         ApolloClient.builder()
             .serverUrl(get<String>(named(BASE_URL_NAME)))
+            .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build()))
             .okHttpClient(get())
             .build()
     }
