@@ -10,7 +10,6 @@ import de.mobile.dinesh.gorillas.ui.postdetail.viewdata.PostItemDetailViewData
 import de.mobile.dinesh.gorillas.ui.postdetail.viewdata.toViewData
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
 
 class PostDetailViewModel(
     private val postId: String?,
@@ -20,7 +19,7 @@ class PostDetailViewModel(
     private val TAG by lazy { PostDetailViewModel::javaClass.name }
 
     sealed class State {
-        data class Content(val post: PostItemDetailViewData) :  State()
+        data class Content(val post: PostItemDetailViewData) : State()
         object Loading : State()
         object NetworkError : State()
     }
@@ -32,17 +31,18 @@ class PostDetailViewModel(
         viewModelScope.launch {
             try {
                 postId?.let {
-                    getPostByIdUseCase(it).collectLatest { domainData ->
-                        domainData.toViewData()?.let { post ->
-                            _state.value = State.Content(post)
-                        } ?: run {
-                            Log.d(TAG, "data missing")
+                    getPostByIdUseCase(it)
+                        .collectLatest { domainData ->
+                            domainData.toViewData()?.let { post ->
+                                _state.value = State.Content(post)
+                            } ?: run {
+                                Log.d(TAG, "data missing")
+                                _state.value = State.NetworkError
+                            }
                         }
-                    }
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, e.stackTrace.toString())
                 _state.value = State.NetworkError
             }
         }

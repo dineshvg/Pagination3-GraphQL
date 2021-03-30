@@ -6,10 +6,12 @@ import de.mobile.dinesh.gorillas.PaginatePostsQuery
 import de.mobile.dinesh.gorillas.data.network.client.ApiClient
 import de.mobile.dinesh.gorillas.data.network.mapper.toDomain
 import de.mobile.dinesh.gorillas.domain.model.ZeroQueryListPost
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import retrofit2.HttpException
 import java.io.IOException
 
+@ExperimentalCoroutinesApi
 class PostKeyedPagingSource(
     private val apiClient: ApiClient
 ) : PagingSource<Int, ZeroQueryListPost>() {
@@ -40,9 +42,7 @@ class PostKeyedPagingSource(
                 prevKey = prevKey,
                 nextKey = nextKey
             )
-        } catch (e: IOException) {
-            return LoadResult.Error(e)
-        } catch (e: HttpException) {
+        } catch (e: Exception) {
             return LoadResult.Error(e)
         }
     }
