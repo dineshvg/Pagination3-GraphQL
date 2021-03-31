@@ -1,5 +1,4 @@
 # Pagination-App
-Task for Android Developer role in Gorillas
 
 A small Android App written in Kotlin, that makes use of this example GraphQL API. The app consists of two screens.
 
